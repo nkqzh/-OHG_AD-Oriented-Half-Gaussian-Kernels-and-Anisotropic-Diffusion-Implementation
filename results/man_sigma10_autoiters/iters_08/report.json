@@ -1,0 +1,27 @@
+{
+  "input": "data/USC_SIPI/man.tiff",
+  "gt": "data/USC_SIPI/man.tiff",
+  "sigma": 10.0,
+  "params": {
+    "k": 0.3,
+    "h": 0.1,
+    "a": 0.1,
+    "mu": 5.0,
+    "lam": 1.0,
+    "dtheta_deg": 2.0,
+    "dt": 0.05,
+    "iters": 8
+  },
+  "device": "cuda",
+  "outputs": {
+    "noisy": "results/man_sigma10_autoiters\\iters_08\\man_noisy.png",
+    "denoised": "results/man_sigma10_autoiters\\iters_08\\man_den_ohgad.png"
+  },
+  "report": {
+    "psnr": 31.061569753175924,
+    "ssim": 0.8451305362619501,
+    "psnr(noisy,gt)": 28.429977541523485,
+    "psnr(den,gt)": 31.061569753175924
+  },
+  "elapsed_sec": 1.091
+}
