@@ -1,0 +1,23 @@
+[project]
+name = "ohg-ad"
+version = "0.1.0"
+description = "Oriented Half-Gaussian Anisotropic Diffusion (OHG-AD): modular research & experiment toolbox"
+authors = [{name = "nkqzh + collaborators"}]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "numpy>=1.23",
+  "torch>=2.0",
+  "imageio>=2.28",
+  "scikit-image>=0.20",
+  "PyYAML>=6.0",
+  "matplotlib>=3.7",
+  "tqdm>=4.66"
+]
+
+[tool.setuptools]
+packages = ["ohg_ad"]
+
+[build-system]
+requires = ["setuptools>=67", "wheel"]
+build-backend = "setuptools.build_meta"

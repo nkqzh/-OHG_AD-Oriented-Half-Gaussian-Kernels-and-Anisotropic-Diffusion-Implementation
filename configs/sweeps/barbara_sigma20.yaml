@@ -1,0 +1,16 @@
+dataset:
+  images:
+    - data/USC_SIPI/barbarag.bmp
+  sigma: 20
+defaults:
+  dtheta: 2
+  dt: 0.05
+  mu: 5
+  lam: 1.2
+  device: cuda
+search:
+  iters: [12, 15, 18, 20, 22]
+  k: [0.28, 0.3, 0.32]
+  h: [0.1]
+  a: [0.2, 0.22]
+ref_metric: psnr
