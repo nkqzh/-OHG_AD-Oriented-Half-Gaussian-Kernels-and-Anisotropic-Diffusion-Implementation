@@ -1,0 +1,39 @@
+dataset:
+  images:
+  - data/USC_SIPI/man.tiff
+  sigma: 10
+defaults:
+  device: cuda
+  dtheta: 2.0
+  dt: 0.05
+  iters: 10
+  mu: 5.0
+  lam: 1.0
+search:
+  k:
+  - 0.2
+  - 0.25
+  - 0.3
+  - 0.35
+  - 0.4
+  h:
+  - 0.08
+  - 0.1
+  - 0.12
+  a:
+  - 0.08
+  - 0.1
+  - 0.12
+  iters:
+  - 6
+  - 8
+  - 10
+  - 12
+  - 14
+  lam:
+  - 1.0
+  - 1.2
+  mu:
+  - 5.0
+ref_metric: ssim
+runs_dir: runs

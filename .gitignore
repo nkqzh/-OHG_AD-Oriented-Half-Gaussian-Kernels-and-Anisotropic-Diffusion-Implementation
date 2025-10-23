@@ -9,3 +9,25 @@ dist/
 build/
 *.egg-info/
 results/
+$block = @'
+# --- keep selected results for README ---
+!results/
+!results/barbara_sigma20_run/
+!results/barbara_sigma20_run/**
+
+!results/man_sigma10_run/
+!results/man_sigma10_run/**
+
+!results/sweeps/
+!results/sweeps/man_sigma10/
+!results/sweeps/man_sigma10/aggregate/
+!results/sweeps/man_sigma10/aggregate/**
+
+!results/sweeps/man_sigma10/plots/
+!results/sweeps/man_sigma10/plots/**
+
+!results/sweeps/man_sigma10/runs/
+!results/sweeps/man_sigma10/runs/**
+# --- end ---
+'@
+Add-Content -Path .gitignore -Value $block
