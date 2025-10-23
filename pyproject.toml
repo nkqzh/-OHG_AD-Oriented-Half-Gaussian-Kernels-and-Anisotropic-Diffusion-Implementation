@@ -16,7 +16,8 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["ohg_ad"]
+packages = ["codes"]
+
 
 [build-system]
 requires = ["setuptools>=67", "wheel"]

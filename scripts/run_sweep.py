@@ -1,6 +1,6 @@
 from __future__ import annotations
 import argparse
-from ohg_ad.runners.sweep import run_sweep
+from codes.runners.sweep import run_sweep
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()

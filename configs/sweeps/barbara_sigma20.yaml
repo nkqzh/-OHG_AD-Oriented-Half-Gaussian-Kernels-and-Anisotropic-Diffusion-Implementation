@@ -1,6 +1,6 @@
 dataset:
   images:
-    - data/USC_SIPI/barbarag.bmp
+    - data/USC_SIPI/barbara.bmp
   sigma: 20
 defaults:
   dtheta: 2

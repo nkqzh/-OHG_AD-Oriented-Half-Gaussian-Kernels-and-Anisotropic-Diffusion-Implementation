@@ -26,6 +26,9 @@ def ohgad_denoise(img: torch.Tensor, params: OHGADParams) -> torch.Tensor:
 
 def run_once(input_path: str, gt_path: str | None, sigma: float, params: OHGADParams,
              device: str = "cuda", out_dir: str = "results/exp"):
+    import time
+    from dataclasses import asdict
+
     dev = torch.device(device if (device.startswith("cuda") and torch.cuda.is_available()) else "cpu")
     clean = to_gray_tensor(input_path, device=str(dev))
     if sigma > 0:
@@ -37,14 +40,17 @@ def run_once(input_path: str, gt_path: str | None, sigma: float, params: OHGADPa
         noisy = clean
         gt = to_gray_tensor(gt_path, device=str(dev)) if gt_path else None
 
+    t0 = time.time()
     with torch.no_grad():
         den = ohgad_denoise(noisy, params)
+    elapsed = time.time() - t0
 
     stem = os.path.splitext(os.path.basename(input_path))[0]
+    os.makedirs(out_dir, exist_ok=True)
     noisy_out = os.path.join(out_dir, f"{stem}_noisy.png")
     den_out   = os.path.join(out_dir, f"{stem}_den_ohgad.png")
     save_gray_tensor(noisy, noisy_out)
-    save_gray_tensor(den, den_out)
+    save_gray_tensor(den,   den_out)
 
     report = {}
     if gt is not None:
@@ -55,6 +61,39 @@ def run_once(input_path: str, gt_path: str | None, sigma: float, params: OHGADPa
             "psnr(noisy,gt)": _psnr(noisy_np, gt_np, 1.0),
             "psnr(den,gt)": _psnr(den_np, gt_np, 1.0)
         }
-    os.makedirs(out_dir, exist_ok=True)
+
+    # ---------- 新增：写出 report.json + 追加 metrics.jsonl ----------
+    summary = {
+        "input": input_path,
+        "gt": gt_path,
+        "sigma": sigma,
+        "params": asdict(params),
+        "device": str(dev),
+        "outputs": {"noisy": noisy_out, "denoised": den_out},
+        "report": report,
+        "elapsed_sec": round(elapsed, 3),
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+    }
+    # 1) 本次完整结果（可读性强）
+    with open(os.path.join(out_dir, "report.json"), "w", encoding="utf-8") as f:
+        json.dump(summary, f, ensure_ascii=False, indent=2)
+
+    # 2) 逐行日志（便于后续汇总/可视化）
+    metrics_row = {
+        "img": os.path.basename(input_path),
+        "sigma": sigma,
+        "params": asdict(params),
+        "psnr": report.get("psnr"),
+        "ssim": report.get("ssim"),
+        "psnr(noisy,gt)": report.get("psnr(noisy,gt)"),
+        "psnr(den,gt)": report.get("psnr(den,gt)"),
+        "elapsed_sec": round(elapsed, 3),
+        "timestamp": summary["timestamp"],
+    }
+    with open(os.path.join(out_dir, "metrics.jsonl"), "a", encoding="utf-8") as f:
+        f.write(json.dumps(metrics_row, ensure_ascii=False) + "\n")
+    # -------------------------------------------------------------
+
+    # 保持原有 stdout 行为（你刚才看到的那两段 JSON 就来自这里）
     print(json.dumps({"noisy": noisy_out, "denoised": den_out, "report": report}, ensure_ascii=False, indent=2))
     return {"noisy": noisy_out, "denoised": den_out, "report": report}

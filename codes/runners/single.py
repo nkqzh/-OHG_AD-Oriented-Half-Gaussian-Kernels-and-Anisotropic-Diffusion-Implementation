@@ -2,7 +2,7 @@ from __future__ import annotations
 import os, json, time, torch
 from dataclasses import asdict
 from ..core.params import OHGADParams
-from ..algorithms.ohgad_new import run_once
+from ..algorithms.ohg_ad import run_once
 
 def main_cli(args=None):
     import argparse
