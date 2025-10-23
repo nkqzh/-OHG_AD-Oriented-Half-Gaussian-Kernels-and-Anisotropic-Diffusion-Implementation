@@ -26,7 +26,7 @@
 
 - **模块化核心实现**（PyTorch），便于阅读与修改；
 - **完整的命令行工具链**：单图实验 / 自动选择迭代步数 / 批量网格搜索（sweep）；
-- **结果标准化与可视化**：PSNR/SSIM 指标、曲线、热图、3D 散点与 3D 曲面（带色条）；
+- **结果标准化与可视化**：PSNR/SSIM 指标、曲线、热图、3D 散点与 3D 曲面）；
 - **可复现的目录/日志结构**，直接用于论文指标复现与图表生成。
 
 > 说明：本 README 暂时去除了数学公式推导，聚焦于复现实验与工程化使用。
@@ -42,7 +42,7 @@ cd -OHG_AD-Oriented-Half-Gaussian-Kernels-and-Anisotropic-Diffusion-Implementati
 python -m pip install -e .
 ```
 
-- **数据**：将示例数据放入 `data/USC_SIPI/`（如 `man.tiff`, `barbarag.bmp`, `lena.tiff`）。
+- **数据**：将示例数据放入 `data/USC_SIPI/`（如 `man.tiff`, `barbara.bmp`, `lena.tiff`）。
 - **Windows**：PowerShell 中含逗号的参数请用引号包裹，如 `--plots "curves,heatmap,3d,surface"`。
 - **设备**：`--device cuda` 时自动回退为 CPU（当 CUDA 不可用）。
 
@@ -102,7 +102,7 @@ docs/                     # 可选：说明/示例图片（供 README 引用）
 ## 4) 项目实验指南 & 结果展示 · Experiments & Results (Man / Barbara)
 
 > 本节覆盖**所有官方脚本**的**用途、参数说明与示例命令**。  
-> 样例图片使用 USC-SIPI：`man.tiff`（σ=10）与 `barbarag.bmp`（σ=20）。  
+> 样例图片使用 USC-SIPI：`man.tiff`（σ=10）与 `barbara.bmp`（σ=20）。  
 > **临时文本指标**仅作占位（后续请替换为最新图片或数值）。
 
 ### 4.1 单图实验：`scripts/run_single.py`
@@ -162,7 +162,7 @@ python scripts/run_single.py \
 
 # Barbara-20
 python scripts/run_single.py \
-  --input data/USC_SIPI/barbarag.bmp --gt data/USC_SIPI/barbarag.bmp \
+  --input data/USC_SIPI/barbara.bmp --gt data/USC_SIPI/barbara.bmp \
   --sigma 20 --auto-iters --iters-max 30 --patience 3 --ref ssim \
   --dt 0.05 --mu 5 --lam 1.2 --k 0.35 --h 0.11 --a 0.22 \
   --out results/barbara_sigma20_autoiters
