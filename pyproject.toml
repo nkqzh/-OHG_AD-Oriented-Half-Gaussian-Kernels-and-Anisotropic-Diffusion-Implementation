@@ -1,6 +1,6 @@
 [project]
 name = "ohg-ad"
-version = "0.1.0"
+version = "1.0.0"
 description = "Oriented Half-Gaussian Anisotropic Diffusion (OHG-AD): modular research & experiment toolbox"
 authors = [{name = "nkqzh + collaborators"}]
 readme = "README.md"
