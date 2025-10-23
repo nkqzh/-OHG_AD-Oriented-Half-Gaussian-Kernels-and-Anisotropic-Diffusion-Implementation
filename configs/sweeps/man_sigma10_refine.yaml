@@ -1,0 +1,25 @@
+# Man (σ=10) — refine around best region
+dataset:
+  images:
+    - data/USC_SIPI/man.tiff
+  sigma: 10
+
+defaults:
+  device: cuda
+  dtheta: 2.0
+  dt: 0.05
+  iters: 9          # 近似最佳的中值；search 里会细化
+  mu: 5.0
+  lam: 1.0
+
+# 围绕粗扫的高分区域细化（更密更窄）
+search:
+  k:    [0.24, 0.28, 0.30, 0.32, 0.34, 0.36]
+  h:    [0.08, 0.09, 0.10, 0.11, 0.12]
+  a:    [0.10, 0.11, 0.12]
+  dt:   [0.05, 0.06, 0.07]
+  iters: [7, 8, 9, 10, 11]
+  lam:  [1.0, 1.1, 1.2]
+
+ref_metric: ssim
+runs_dir: runs

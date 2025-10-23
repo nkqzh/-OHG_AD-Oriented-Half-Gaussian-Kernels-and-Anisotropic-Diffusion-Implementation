@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+单次/自动 iters 运行器 / Single run & Auto-iters
+-----------------------------------------------
+- 普通模式：固定 iters 跑一次
+- --auto-iters：从 1..iters_max 搜索最佳 iters，基于 PSNR/SSIM 早停
+"""
 from __future__ import annotations
 import os, json, time, torch
 from dataclasses import asdict
@@ -9,7 +16,7 @@ def main_cli(args=None):
     p = argparse.ArgumentParser()
     p.add_argument('--input', required=True)
     p.add_argument('--gt', default=None)
-    p.add_argument('--sigma', type=float, default=0.0)
+    p.add_argument('--sigma', type=float, default=0.0, help="若>0则在 input 上加噪并以 input 作为 GT")
     p.add_argument('--dtheta', type=float, default=2.0)
     p.add_argument('--dt', type=float, default=0.05)
     p.add_argument('--iters', type=int, default=12)
@@ -21,26 +28,22 @@ def main_cli(args=None):
     p.add_argument('--a', type=float, default=0.1)
     p.add_argument('--mu', type=float, default=5.0)
     p.add_argument('--lam', type=float, default=1.0)
-    # ✅ 注意：带短横线的参数，属性名是下划线形式
+    # 自动 iters
     p.add_argument('--auto-iters', dest='auto_iters', action='store_true')
     p.add_argument('--iters-max',  dest='iters_max',  type=int, default=30)
     p.add_argument('--patience', type=int, default=3)
     p.add_argument('--ref', choices=['psnr','ssim'], default='psnr')
     args = p.parse_args(args)
 
-    # 可复现
     try:
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
     except Exception:
         pass
 
-    params = OHGADParams(
-        k=args.k, h=args.h, a=args.a, mu=args.mu, lam=args.lam,
-        dtheta_deg=args.dtheta, dt=args.dt, iters=args.iters
-    )
+    params = OHGADParams(k=args.k, h=args.h, a=args.a, mu=args.mu, lam=args.lam,
+                         dtheta_deg=args.dtheta, dt=args.dt, iters=args.iters)
 
-    # ✅ 这里用 args.auto_iters（下划线），不要写成 args.auto-iters
     if not args.auto_iters:
         start = time.time()
         rep = run_once(args.input, args.gt, args.sigma, params, args.device, args.out)
@@ -48,15 +51,12 @@ def main_cli(args=None):
         print(json.dumps(rep, ensure_ascii=False, indent=2))
         return
 
-    # 自动选最佳 iters（early-stop）
-    best = None
-    stay = 0
+    # Auto-iters
+    best, stay = None, 0
     for it in range(1, args.iters_max + 1):
         p2 = OHGADParams(**{**asdict(params), "iters": it})
-        rep = run_once(
-            args.input, args.gt, args.sigma, p2, args.device,
-            os.path.join(args.out, f"iters_{it:02d}")
-        )
+        rep = run_once(args.input, args.gt, args.sigma, p2, args.device,
+                       os.path.join(args.out, f"iters_{it:02d}"))
         score = rep["report"].get(args.ref, float("-inf"))
         if (best is None) or (score > best["score"]):
             best = {"iters": it, "score": score, "report": rep["report"]}

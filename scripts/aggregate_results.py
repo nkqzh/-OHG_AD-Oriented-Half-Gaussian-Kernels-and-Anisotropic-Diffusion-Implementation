@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 聚合 sweep 结果：读取一个或多个 metrics.jsonl（或 metrics.*.jsonl），导出：

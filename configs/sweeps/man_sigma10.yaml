@@ -1,16 +1,31 @@
+# Man (σ=10) — coarse sweep
 dataset:
   images:
     - data/USC_SIPI/man.tiff
   sigma: 10
+
+# 默认参数（可被 search 覆盖）
 defaults:
-  dtheta: 2
-  dt: 0.05
-  mu: 5
-  lam: 1
   device: cuda
+  dtheta: 2.0         # 角度离散（度）
+  dt: 0.05            # 显式欧拉步长（≤0.1稳定）
+  iters: 10           # 仅作占位，search 里会覆盖
+  mu: 5.0
+  lam: 1.0
+
+# 搜索空间（离散网格；每个键可填标量或列表）
 search:
-  iters: [4, 6, 8, 10, 12]
-  k: [0.25, 0.3, 0.35]
-  h: [0.08, 0.1, 0.12]
-  a: [0.1]
-ref_metric: psnr
+  k:   [0.20, 0.25, 0.30, 0.35, 0.40]
+  h:   [0.08, 0.10, 0.12]
+  a:   [0.08, 0.10, 0.12]
+  iters: [6, 8, 10, 12, 14]
+  lam: [1.0, 1.2]     # 轻微探索各向异性
+  mu:  [5.0]          # 保持稳定值
+  # 可选探索更细角分辨率（代价更高）：
+  # dtheta: [2.0, 1.0] 以及dt步长
+
+# 评估选择“最佳”的指标（也会写入 best.json）
+ref_metric: ssim
+
+# 可选：统一把各组合输出收纳到 <out>/runs/
+runs_dir: runs

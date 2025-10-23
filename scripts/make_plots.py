@@ -1,10 +1,8 @@
-# --- bootstrap: allow running without install ---
 from __future__ import annotations
 import os, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
-# ------------------------------------------------
 
 import argparse, os
 from codes.viz.plot_curves import plot_curves
